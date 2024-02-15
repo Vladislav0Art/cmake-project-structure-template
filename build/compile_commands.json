@@ -1,0 +1,20 @@
+[
+{
+  "directory": "/Users/Vladislav.Artiukhov/dev/cpp/sample-cmake-project/build",
+  "command": "/usr/bin/clang++  -I/Users/Vladislav.Artiukhov/dev/cpp/sample-cmake-project/./include -I/Users/Vladislav.Artiukhov/dev/cpp/sample-cmake-project/build -g -std=gnu++17 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.2.sdk -o CMakeFiles/main.dir/src/main.cpp.o -c /Users/Vladislav.Artiukhov/dev/cpp/sample-cmake-project/src/main.cpp",
+  "file": "/Users/Vladislav.Artiukhov/dev/cpp/sample-cmake-project/src/main.cpp",
+  "output": "CMakeFiles/main.dir/src/main.cpp.o"
+},
+{
+  "directory": "/Users/Vladislav.Artiukhov/dev/cpp/sample-cmake-project/build",
+  "command": "/usr/bin/clang++  -I/Users/Vladislav.Artiukhov/dev/cpp/sample-cmake-project/./include -I/Users/Vladislav.Artiukhov/dev/cpp/sample-cmake-project/build -g -std=gnu++17 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.2.sdk -o CMakeFiles/main.dir/include/components/HelloWorldComponent/hello-world-component.cpp.o -c /Users/Vladislav.Artiukhov/dev/cpp/sample-cmake-project/include/components/HelloWorldComponent/hello-world-component.cpp",
+  "file": "/Users/Vladislav.Artiukhov/dev/cpp/sample-cmake-project/include/components/HelloWorldComponent/hello-world-component.cpp",
+  "output": "CMakeFiles/main.dir/include/components/HelloWorldComponent/hello-world-component.cpp.o"
+},
+{
+  "directory": "/Users/Vladislav.Artiukhov/dev/cpp/sample-cmake-project/build",
+  "command": "/usr/bin/clang++  -I/Users/Vladislav.Artiukhov/dev/cpp/sample-cmake-project/./include -I/Users/Vladislav.Artiukhov/dev/cpp/sample-cmake-project/build -g -std=gnu++17 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.2.sdk -o CMakeFiles/main.dir/include/utils/PrintingUtility/printing-utility.cpp.o -c /Users/Vladislav.Artiukhov/dev/cpp/sample-cmake-project/include/utils/PrintingUtility/printing-utility.cpp",
+  "file": "/Users/Vladislav.Artiukhov/dev/cpp/sample-cmake-project/include/utils/PrintingUtility/printing-utility.cpp",
+  "output": "CMakeFiles/main.dir/include/utils/PrintingUtility/printing-utility.cpp.o"
+}
+]
