@@ -1,9 +1,0 @@
-/Users/Vladislav.Artiukhov/dev/cpp/sample-cmake-project/build/CMakeFiles/main.dir
-/Users/Vladislav.Artiukhov/dev/cpp/sample-cmake-project/build/CMakeFiles/edit_cache.dir
-/Users/Vladislav.Artiukhov/dev/cpp/sample-cmake-project/build/CMakeFiles/rebuild_cache.dir
-/Users/Vladislav.Artiukhov/dev/cpp/sample-cmake-project/build/include/CMakeFiles/edit_cache.dir
-/Users/Vladislav.Artiukhov/dev/cpp/sample-cmake-project/build/include/CMakeFiles/rebuild_cache.dir
-/Users/Vladislav.Artiukhov/dev/cpp/sample-cmake-project/build/include/components/CMakeFiles/edit_cache.dir
-/Users/Vladislav.Artiukhov/dev/cpp/sample-cmake-project/build/include/components/CMakeFiles/rebuild_cache.dir
-/Users/Vladislav.Artiukhov/dev/cpp/sample-cmake-project/build/include/utils/CMakeFiles/edit_cache.dir
-/Users/Vladislav.Artiukhov/dev/cpp/sample-cmake-project/build/include/utils/CMakeFiles/rebuild_cache.dir
