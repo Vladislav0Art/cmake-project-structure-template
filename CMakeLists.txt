@@ -29,5 +29,6 @@ add_executable(main
 
 target_include_directories(main PUBLIC
     ./include
+    ./libs
     ${CMAKE_CURRENT_BINARY_DIR}
 )
