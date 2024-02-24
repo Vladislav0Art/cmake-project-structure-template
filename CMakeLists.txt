@@ -26,6 +26,9 @@ find_package(Protobuf CONFIG REQUIRED)
 find_package(gRPC CONFIG REQUIRED)
 
 
+# TODO: not the best way to do it this way
+#       See of better implementation: https://github.com/grpc/grpc/blob/master/examples/cpp/helloworld/CMakeLists.txt
+#                                     https://github.com/grpc/grpc/blob/master/examples/cpp/cmake/common.cmake
 # Paths must match the destination path set inside generate-proto.sh:
 # Contains all the files generated inside build folder ending with pb.cc (i.e. grpc and proto cc-files)
 file(GLOB proto_srcs "${CMAKE_SOURCE_DIR}/build/**/*.pb.cc")
