@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package profile;
+
+// common
+import "common/error-details.proto";
+// requests
+import "request-models/auth-requests.proto";
+// responses
+import "response-models/auth-responses.proto";
+
+
+service AuthService {
+  rpc login (request_models.LoginRequest) returns (response_models.LoginResponse) {}
+  rpc register (request_models.RegistrationRequest) returns (response_models.RegistrationResponse) {}
+}
+

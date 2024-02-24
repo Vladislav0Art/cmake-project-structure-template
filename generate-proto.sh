@@ -8,7 +8,7 @@ project_root="$(pwd)"
 # Where to store the generated sources (if changed, adjust included directories of the targets in the root CMakeLists.txt)
 dest_dir="${project_root}/generated"
 # Path to folder with proto-files
-proto_files_dir="${project_root}/proto"
+proto_files_dir="${project_root}/src/proto"
 
 echo "Project root directory: ${project_root}"
 echo "Build directory: ${dest_dir}"
@@ -23,4 +23,4 @@ echo "Generate source files from protobuf models..."
        --cpp_out "${dest_dir}" \
        -I "${proto_files_dir}" \
        --plugin=protoc-gen-grpc="${protoc_gen_grpc_path}" \
-       "${proto_files_dir}/"*.proto
+       "${proto_files_dir}/"**/*.proto

@@ -28,21 +28,43 @@ find_package(gRPC CONFIG REQUIRED)
 
 # Paths must match the destination path set inside generate-proto.sh:
 # Contains all the files generated inside build folder ending with pb.cc (i.e. grpc and proto cc-files)
-file(GLOB proto_srcs "${CMAKE_SOURCE_DIR}/generated/*.pb.cc")
+file(GLOB proto_srcs "${CMAKE_SOURCE_DIR}/generated/**/*.pb.cc")
 # Contains all the files generated inside build folder ending with pb.h (i.e. grpc and proto h-files)
-file(GLOB proto_hdrs "${CMAKE_SOURCE_DIR}/generated/*.pb.h")
+file(GLOB proto_hdrs "${CMAKE_SOURCE_DIR}/generated/**/*.pb.h")
 
 message(NOTICE "proto_srcs: " ${proto_srcs})
 message(NOTICE "proto_hdrs: " ${proto_hdrs})
+
+add_library(grpc_lib
+    ${proto_srcs}
+    ${proto_hdrs}
+)
+
+target_link_libraries(grpc_lib
+    gRPC::grpc++
+    gRPC::grpc++_reflection
+    protobuf::libprotobuf
+)
+
+target_include_directories(grpc_lib PUBLIC
+    ${CMAKE_CURRENT_BINARY_DIR}
+)
+
 
 
 add_executable(main
     src/main.cpp
     ${COMPONENTS_SRCS}
     ${UTILS_SRCS}
+)
 
-    ${proto_srcs}
-    ${proto_hdrs}
+target_link_libraries(main
+    grpc_lib
+
+    absl::flags_parse
+    absl::flags
+    gRPC::grpc++
+    protobuf::libprotobuf
 )
 
 target_include_directories(main PUBLIC
@@ -54,9 +76,3 @@ target_include_directories(main PUBLIC
 
 # Generate gRPC services inside ./buide folder via Protobuf and gRPC plugin:
 # /Users/Vladislav.Artiukhov/.local/bin/protoc --grpc_out=./build --cpp_out=./build --plugin=protoc-gen-grpc=/Users/Vladislav.Artiukhov/.local/bin/grpc_cpp_plugin service.proto
-
-target_link_libraries(main
-    absl::flags_parse
-    gRPC::grpc++
-    protobuf::libprotobuf
-)

@@ -10,7 +10,8 @@
 #include <grpcpp/health_check_service_interface.h>
 
 
-#include "profile-service.grpc.pb.h"
+#include "services/auth-service.grpc.pb.h"
+#include "services/auth-service.pb.h"
 
 
 #include "components/HelloWorldComponent/hello-world-component.h"
