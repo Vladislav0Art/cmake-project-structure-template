@@ -13,10 +13,12 @@ add_subdirectory(./include/)
 #### variables propagations
 # COMPONENTS_SRCS       - propagated from ./include/components
 # UTILS_SRCS            - propagated from ./include/utils
-message(NOTICE "Binary dir: " ${CMAKE_CURRENT_BINARY_DIR})
-message(NOTICE "Source dir: " ${CMAKE_SOURCE_DIR})
 message(NOTICE "Components srcs: " ${COMPONENTS_SRCS})
 message(NOTICE "Utils srcs: " ${UTILS_SRCS})
+
+
+message(NOTICE "Binary dir: " ${CMAKE_CURRENT_BINARY_DIR})
+message(NOTICE "Source dir: " ${CMAKE_SOURCE_DIR})
 
 
 # If gRPC is locally installed, add into cmake: `-DCMAKE_PREFIX_PATH=path/to/installation` (mine is: /Users/Vladislav.Artiukhov/.local)
@@ -32,6 +34,7 @@ file(GLOB proto_hdrs "${CMAKE_SOURCE_DIR}/generated/*.pb.h")
 
 message(NOTICE "proto_srcs: " ${proto_srcs})
 message(NOTICE "proto_hdrs: " ${proto_hdrs})
+
 
 add_executable(main
     src/main.cpp
