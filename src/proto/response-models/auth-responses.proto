@@ -2,7 +2,6 @@ syntax = "proto3";
 
 package response_models;
 
-import "common/error-details.proto";
 
 message Payload {
     string email = 1;
@@ -11,10 +10,8 @@ message Payload {
 
 message LoginResponse {
     Payload payload = 1;
-    common.ErrorDetails details = 2;
 }
 
 message RegistrationResponse {
     Payload payload = 1;
-    common.ErrorDetails details = 2;
 }

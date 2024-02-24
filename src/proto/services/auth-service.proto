@@ -2,8 +2,6 @@ syntax = "proto3";
 
 package profile;
 
-// common
-import "common/error-details.proto";
 // requests
 import "request-models/auth-requests.proto";
 // responses

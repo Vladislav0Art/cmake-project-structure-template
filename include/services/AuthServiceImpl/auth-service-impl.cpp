@@ -18,21 +18,13 @@ namespace application::services
     std::string username = "Username taken from the database";
     std::string password = request->password();
 
-    std::cout << "email: " << email << "\n"
-                << "username: " << username << "\n"
-                << "password: " << password << "\n";
+    std::cout << "email: '" << email << "'\n"
+                << "username: '" << username << "'\n"
+                << "password: '" << password << "'\n";
 
     if (password.size() < 4) {
-        // Set error details
-        common::ErrorDetails error_details;
-        error_details.set_has_error(true);
-        error_details.add_details("Password must be at least 4 characters long.");
-
-        // Set the error details in the response
-        response->mutable_details()->CopyFrom(error_details);
-
         // Return error status
-        return grpc::Status(grpc::StatusCode::INVALID_ARGUMENT, "Invalid password");
+        return grpc::Status(grpc::StatusCode::INVALID_ARGUMENT, "Password must contain at least 4 symbols");
     }
 
     // If password is valid, set payload and return OK status

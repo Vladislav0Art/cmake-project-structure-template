@@ -1,9 +1,0 @@
-syntax = "proto3";
-
-package common;
-
-
-message ErrorDetails {
-    bool has_error = 1;
-    repeated string details = 2;
-}
