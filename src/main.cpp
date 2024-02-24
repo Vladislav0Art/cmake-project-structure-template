@@ -51,13 +51,13 @@ int main() {
 
   grpc::EnableDefaultHealthCheckService(true);
 
-//   ServerBuilder builder;
-//   builder.AddListeningPort(server_address, grpc::InsecureServerCredentials());
-  // ProfileServiceImpl service;
-//   builder.RegisterService(&service);
-//   std::unique_ptr<Server> server(builder.BuildAndStart());
-//   std::cout << "Server listening on " << server_address << std::endl;
-//   server->Wait();
+  ServerBuilder builder;
+  builder.AddListeningPort(server_address, grpc::InsecureServerCredentials());
+  ProfileServiceImpl service;
+  builder.RegisterService(&service);
+  std::unique_ptr<Server> server(builder.BuildAndStart());
+  std::cout << "Server listening on " << server_address << std::endl;
+  server->Wait();
 
     return 0;
 }
