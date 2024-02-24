@@ -1,54 +1,44 @@
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.18)
 
 project(SampleCmakeProject CXX)
 
-#### setting global props
+# include auxiliary cmake file grpc sources generation
+# provides 'generated_proto_models_srcs' variable which contains generated source files of proto models
+include(./cmake/grpc-generation.cmake)
+
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 
-#### adding subdirs
 add_subdirectory(./include/)
 
 #### variables propagations
 # COMPONENTS_SRCS       - propagated from ./include/components
 # SERVICES_SRCS         - propagated from ./include/services
-message(NOTICE "Components srcs: " ${COMPONENTS_SRCS})
-message(NOTICE "Services srcs: " ${SERVICES_SRCS})
+message(NOTICE "COMPONENTS_SRCS: " ${COMPONENTS_SRCS})
+message(NOTICE "SERVICES_SRCS: " ${SERVICES_SRCS})
 
-
-message(NOTICE "Binary dir: " ${CMAKE_CURRENT_BINARY_DIR})
-message(NOTICE "Source dir: " ${CMAKE_SOURCE_DIR})
-
-
-# If gRPC is locally installed, add into cmake: `-DCMAKE_PREFIX_PATH=path/to/installation` (mine is: /Users/Vladislav.Artiukhov/.local)
+# requires grpc and protobuf to be locally installed:
+# if the installation is not present in the path then add the following argument into the cmake configuration:
+# -DCMAKE_PREFIX_PATH=path/to/grpc/installation (e.g., -DCMAKE_PREFIX_PATH=/Users/Vladislav.Artiukhov/.local)
+# if VSCode CMake extention is used, navigate to: "Open Settings UI" -> type cmake -> scroll down to "Cmake: Configure Args" -> Add item "-DCMAKE_PREFIX_PATH=/Users/Vladislav.Artiukhov/.local"
 find_package(Protobuf CONFIG REQUIRED)
 find_package(gRPC CONFIG REQUIRED)
 
 
-# TODO: not the best way to do it this way
-#       See of better implementation: https://github.com/grpc/grpc/blob/master/examples/cpp/helloworld/CMakeLists.txt
-#                                     https://github.com/grpc/grpc/blob/master/examples/cpp/cmake/common.cmake
-# Paths must match the destination path set inside generate-proto.sh:
-# Contains all the files generated inside build folder ending with pb.cc (i.e. grpc and proto cc-files)
-file(GLOB proto_srcs "${CMAKE_SOURCE_DIR}/build/**/*.pb.cc")
-# Contains all the files generated inside build folder ending with pb.h (i.e. grpc and proto h-files)
-file(GLOB proto_hdrs "${CMAKE_SOURCE_DIR}/build/**/*.pb.h")
-
-message(NOTICE "proto_srcs: " ${proto_srcs})
-message(NOTICE "proto_hdrs: " ${proto_hdrs})
-
 # Creating library with the grpc components
 add_library(grpc_lib
-    ${proto_srcs}
-    ${proto_hdrs}
+    ${generated_proto_models_srcs}
 )
+
+# adding a dependency over a target 'generate_proto_models' provided from 'grpc-generation.cmake' which awaits generation of proto models
+add_dependencies(grpc_lib generate_proto_models)
 
 target_link_libraries(grpc_lib
     gRPC::grpc++
     protobuf::libprotobuf
 )
-
+# required for grpc components to be able to include each other
 target_include_directories(grpc_lib PUBLIC
     ${CMAKE_CURRENT_BINARY_DIR}
 )
@@ -75,6 +65,3 @@ target_include_directories(main PUBLIC
     ./libs
     ${CMAKE_CURRENT_BINARY_DIR}
 )
-
-# Generate gRPC services inside ./buide folder via Protobuf and gRPC plugin:
-# /Users/Vladislav.Artiukhov/.local/bin/protoc --grpc_out=./build --cpp_out=./build --plugin=protoc-gen-grpc=/Users/Vladislav.Artiukhov/.local/bin/grpc_cpp_plugin service.proto
