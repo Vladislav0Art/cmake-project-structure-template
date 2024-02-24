@@ -8,18 +8,14 @@
 #include <grpcpp/ext/proto_server_reflection_plugin.h>
 #include <grpcpp/grpcpp.h>
 #include <grpcpp/health_check_service_interface.h>
-#include <grpcpp/grpcpp.h>
 
 
-
-
-#include "service.grpc.pb.h"
-#include "service.pb.h"
-
+#include "profile-service.grpc.pb.h"
 
 
 #include "components/HelloWorldComponent/hello-world-component.h"
 #include "mylib/mylib.hpp"
+
 
 
 
@@ -51,15 +47,13 @@ int main() {
     mylib::MyLib lib;
     std::cout << lib.sum(1, 3) << "\n";
 
-
-
   std::string server_address("0.0.0.0:50051");
 
   grpc::EnableDefaultHealthCheckService(true);
 
 //   ServerBuilder builder;
 //   builder.AddListeningPort(server_address, grpc::InsecureServerCredentials());
-  ProfileServiceImpl service;
+  // ProfileServiceImpl service;
 //   builder.RegisterService(&service);
 //   std::unique_ptr<Server> server(builder.BuildAndStart());
 //   std::cout << "Server listening on " << server_address << std::endl;
