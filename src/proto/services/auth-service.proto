@@ -11,7 +11,7 @@ import "response-models/auth-responses.proto";
 
 
 service AuthService {
-  rpc login (request_models.LoginRequest) returns (response_models.LoginResponse) {}
-  rpc register (request_models.RegistrationRequest) returns (response_models.RegistrationResponse) {}
+  rpc Login (request_models.LoginRequest) returns (response_models.LoginResponse) {}
+  rpc Register (request_models.RegistrationRequest) returns (response_models.RegistrationResponse) {}
 }
 

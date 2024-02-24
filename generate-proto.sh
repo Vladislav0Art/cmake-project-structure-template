@@ -6,7 +6,7 @@ protoc_gen_grpc_path="/Users/Vladislav.Artiukhov/.local/bin/grpc_cpp_plugin" # o
 # project path
 project_root="$(pwd)"
 # Where to store the generated sources (if changed, adjust included directories of the targets in the root CMakeLists.txt)
-dest_dir="${project_root}/generated"
+dest_dir="${project_root}/build"
 # Path to folder with proto-files
 proto_files_dir="${project_root}/src/proto"
 

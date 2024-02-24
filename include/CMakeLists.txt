@@ -4,8 +4,8 @@ project(SampleCmakeProjectInclude CXX)
 
 # adding subdirs
 add_subdirectory(./components)
-add_subdirectory(./utils)
+add_subdirectory(./services)
 
 # propagating variable from inner subdirs to root level project
 set(COMPONENTS_SRCS ${COMPONENTS_SRCS} PARENT_SCOPE)
-set(UTILS_SRCS ${UTILS_SRCS} PARENT_SCOPE)
+set(SERVICES_SRCS ${SERVICES_SRCS} PARENT_SCOPE)

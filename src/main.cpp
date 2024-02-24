@@ -1,6 +1,7 @@
 #include <iostream>
+#include <string>
 
-
+// grpc
 #include "absl/flags/flag.h"
 #include "absl/flags/parse.h"
 #include "absl/strings/str_format.h"
@@ -9,56 +10,39 @@
 #include <grpcpp/grpcpp.h>
 #include <grpcpp/health_check_service_interface.h>
 
+// services
+#include "services/AuthServiceImpl/auth-service-impl.h"
 
-#include "services/auth-service.grpc.pb.h"
-#include "services/auth-service.pb.h"
-
-
+// components
 #include "components/HelloWorldComponent/hello-world-component.h"
+
+// libs
 #include "mylib/mylib.hpp"
 
 
 
 
-using grpc::Server;
-using grpc::ServerBuilder;
-using grpc::ServerContext;
-using grpc::Status;
-
-using namespace profile;
-
-
-class ProfileServiceImpl final : public ProfileService::Service {
-public:
-    Status ChangeProfile(ServerContext *context, const ProfileRequest *request, ProfileReply *reply) override {
-        return Status::OK;
-    }
-};
-
-
-
-
 int main() {
-    HelloWorldComponent component;
+    using grpc::Server;
+    using grpc::ServerBuilder;
+    using grpc::ServerContext;
+    using grpc::Status;
 
-    component.greet("World");
-    component.greet("C++");
-    component.greet("CMake");
+    application::services::AuthServiceImpl service;
 
-    mylib::MyLib lib;
-    std::cout << lib.sum(1, 3) << "\n";
+    std::string server_address("0.0.0.0:50051");
+    grpc::EnableDefaultHealthCheckService(true);
 
-  std::string server_address("0.0.0.0:50051");
+    ServerBuilder builder;
+    builder.AddListeningPort(server_address, grpc::InsecureServerCredentials());
 
-  grpc::EnableDefaultHealthCheckService(true);
+    // registering services
+    builder.RegisterService(&service);
 
-  ServerBuilder builder;
-  builder.AddListeningPort(server_address, grpc::InsecureServerCredentials());
-  ProfileServiceImpl service;
-  builder.RegisterService(&service);
-  std::unique_ptr<Server> server(builder.BuildAndStart());
-  std::cout << "Server listening on " << server_address << std::endl;
-  server->Wait();
+    // running server
+    std::unique_ptr<Server> server(builder.BuildAndStart());
+    std::cout << "Server listening on " << server_address << std::endl;
+    server->Wait();
 
     return 0;
 }
