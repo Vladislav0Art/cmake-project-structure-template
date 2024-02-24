@@ -26,35 +26,19 @@ find_package(Protobuf CONFIG REQUIRED)
 find_package(gRPC CONFIG REQUIRED)
 
 
-# Creating library with the grpc components
-add_library(grpc_lib
-    ${generated_proto_models_srcs}
-)
-
-# adding a dependency over a target 'generate_proto_models' provided from 'grpc-generation.cmake' which awaits generation of proto models
-add_dependencies(grpc_lib generate_proto_models)
-
-target_link_libraries(grpc_lib
-    gRPC::grpc++
-    protobuf::libprotobuf
-)
-# required for grpc components to be able to include each other
-target_include_directories(grpc_lib PUBLIC
-    ${CMAKE_CURRENT_BINARY_DIR}
-)
-
-
 # Creating executable
 add_executable(main
     src/main.cpp
 
     ${COMPONENTS_SRCS}
     ${SERVICES_SRCS}
+
+    ${generated_proto_models_srcs}
 )
 
-target_link_libraries(main
-    grpc_lib # linking the created library
+add_dependencies(main generate_proto_models)
 
+target_link_libraries(main
     absl::flags_parse
     gRPC::grpc++
     protobuf::libprotobuf
