@@ -58,7 +58,6 @@ public:
         }
         else {
             // any other error including UNAUTHORIZED should result in a request failure
-            std::cout << status.error_code() << ": " << status.error_message() << std::endl;
             return {std::nullopt, status};
         }
     }

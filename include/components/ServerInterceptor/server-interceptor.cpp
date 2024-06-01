@@ -4,15 +4,6 @@
 namespace interceptors {
 
 void LoggingInterceptor::Intercept(InterceptorBatchMethods* methods) {
-    // std::cout << "Entering interceptor " << (this) << std::endl;
-    /*if (methods->QueryInterceptionHookPoint(
-            InterceptionHookPoints::POST_RECV_MESSAGE)) {
-        LoginRequest* request = static_cast<LoginRequest*>(methods->GetRecvMessage());
-        std::cout << "[Interceptor " << this << "]: "
-                  << "email='" << request->email() << "', password='" << request->password() << "'" << std::endl;
-    }
-    methods->Proceed();*/
-
     if (methods->QueryInterceptionHookPoint(grpc::experimental::InterceptionHookPoints::POST_RECV_INITIAL_METADATA)) {
         std::cout << "[Interceptor " << this << "]: POST_RECV_INITIAL_METADATA" << std::endl;
 
@@ -20,7 +11,7 @@ void LoggingInterceptor::Intercept(InterceptorBatchMethods* methods) {
 
         // print all metadata supplied by the client
         for (const auto& [key, value] : *metadata) {
-            std::cout << key << " -> '" << value << "'" << std::endl;
+            std::cout << "[Interceptor " << this << "]: " << key << " -> '" << value << "'" << std::endl;
         }
 
         // searching for auth token
@@ -37,7 +28,7 @@ void LoggingInterceptor::Intercept(InterceptorBatchMethods* methods) {
             metadata->insert({ "x-user-id", userId });
         }
         else {
-            std::cout << "[Interceptor " << this << "]: " << "token not found" << std::endl;
+            std::cout << "[Interceptor " << this << "]: " << "invalid token" << std::endl;
             // this variable indicates whether the received request contained invalid JWT token
             invalidTokenReceived = true;
         }

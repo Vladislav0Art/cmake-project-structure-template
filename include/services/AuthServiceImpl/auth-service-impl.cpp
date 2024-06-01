@@ -14,8 +14,6 @@ namespace application::services
     const ::request_models::Request* request,
     ::response_models::Response* response
 ) {
-    std::cout << "AuthService::PrivateResource" << std::endl;
-
     // interceptor sets the 'x-user-id' field into metadata if the token is correct.
     // here retrieve the id if it is present, otherwise we need to stop any further execution
     // (the 'Unauthorized' will be returned by interceptor)
@@ -23,11 +21,12 @@ namespace application::services
 
     // unauthorized
     if (itr == context->client_metadata().end()) {
+        std::cout << "[MyService::PrivateResource]: CANCELLED" << std::endl;
         return grpc::Status::CANCELLED;
     }
 
     auto [_, userId] = *itr;
-    std::cout << "[Service] user-id=" << userId << "\n";
+    std::cout << "[MyService::PrivateResource]: userId=" << userId << "\n";
 
     std::string query = request->query();
     std::string userIdStr = std::string(userId.begin(), userId.end());
