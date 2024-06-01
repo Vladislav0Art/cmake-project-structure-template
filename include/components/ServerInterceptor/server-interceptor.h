@@ -25,8 +25,11 @@ using request_models::LoginRequest;
 namespace interceptors {
 
 class LoggingInterceptor : public Interceptor {
- public:
-  void Intercept(InterceptorBatchMethods* methods) override;
+public:
+    void Intercept(InterceptorBatchMethods* methods) override;
+
+private:
+    bool invalidTokenReceived = false;
 };
 
 class LoggingInterceptorFactory : public ServerInterceptorFactoryInterface {

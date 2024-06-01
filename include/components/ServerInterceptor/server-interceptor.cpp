@@ -13,26 +13,33 @@ void LoggingInterceptor::Intercept(InterceptorBatchMethods* methods) {
     }
     methods->Proceed();*/
 
-    if (methods->QueryInterceptionHookPoint(
-            grpc::experimental::InterceptionHookPoints::POST_RECV_INITIAL_METADATA)) {
-        std::cout << "[Interceptor " << this << "]" << std::endl;
+    if (methods->QueryInterceptionHookPoint(grpc::experimental::InterceptionHookPoints::POST_RECV_INITIAL_METADATA)) {
+        std::cout << "[Interceptor " << this << "]: POST_RECV_INITIAL_METADATA" << std::endl;
 
         const auto& metadata = methods->GetRecvInitialMetadata();
-        if (metadata == nullptr) {
-            std::cout << "[Interceptor " << this << "]: " << "metadata is null" << std::endl;
-        }
         auto it = metadata->find("authorization");
 
-        if (it != metadata->end() /* && !std::string(it->second.data()).empty() */) {
-            std::cout << "[Interceptor " << this << "]: token='" << std::string(it->second.data()) << "'" << std::endl;
-            methods->Proceed();
-        } else {
-            methods->ModifySendStatus(grpc::Status(grpc::StatusCode::UNAUTHENTICATED, "Invalid or missing token"));
-            // methods->Hijack();
+        for (const auto& [key, value] : *metadata) {
+            std::cout << key << " -> " << value << std::endl;
         }
-    } else {
-        methods->Proceed();
+
+        // TODO: check token presence and validity
+        if (it != metadata->end() && !std::string(it->second.data()).empty()) {
+            std::cout << "[Interceptor " << this << "]: token='" << std::string(it->second.data()) << "'" << std::endl;
+            // methods->Proceed();
+        }
+        else {
+            std::cout << "[Interceptor " << this << "]: " << "Auth token not found" << std::endl;
+            invalidTokenReceived = true;
+            // methods->Proceed();
+        }
     }
+    else if (methods->QueryInterceptionHookPoint(grpc::experimental::InterceptionHookPoints::PRE_SEND_STATUS) && invalidTokenReceived) {
+        std::cout << "[Interceptor " << this << "]: " << "PRE_SEND_STATUS" << std::endl;
+        methods->ModifySendStatus(grpc::Status(grpc::StatusCode::UNAUTHENTICATED, "Invalid or missing token"));
+    }
+
+    methods->Proceed();
 }
 
 Interceptor* LoggingInterceptorFactory::CreateServerInterceptor(ServerRpcInfo* info) {

@@ -79,23 +79,36 @@ private:
 
 
 TEST_CASE("Connect to the gRPC server") {
-    std::string token = "1234";
-
-    std::vector<std::unique_ptr<grpc::experimental::ClientInterceptorFactoryInterface>> interceptor_creators;
-    interceptor_creators.push_back(std::make_unique<ClientInterceptorFactory>(token));
-
-    // auto channel = grpc::CreateChannel("0.0.0.0:50051", grpc::InsecureChannelCredentials());
-    auto channel = grpc::experimental::CreateCustomChannelWithInterceptors(
-        "0.0.0.0:50051", grpc::InsecureChannelCredentials(), grpc::ChannelArguments(), std::move(interceptor_creators));
-
-    AuthServiceClient client(channel);
 
     std::string email = "test@example.com";
     std::string username = "testuser";
     std::string password = "12345";
 
-    std::string login_response = client.Login(email, password);
-    std::cout << "Login response: " << login_response << std::endl;
+    // failed auth
+    {
+        auto channel = grpc::CreateChannel("0.0.0.0:50051", grpc::InsecureChannelCredentials());
+        AuthServiceClient client(channel);
+
+        std::string login_response = client.Login(email, password);
+        std::cout << "Failed Login response: " << login_response << std::endl;
+    }
+
+
+    // successful auth
+    {
+        std::string token = "1234";
+
+        std::vector<std::unique_ptr<grpc::experimental::ClientInterceptorFactoryInterface>> interceptor_creators;
+        interceptor_creators.push_back(std::make_unique<ClientInterceptorFactory>(token));
+
+        auto channel = grpc::experimental::CreateCustomChannelWithInterceptors(
+            "0.0.0.0:50051", grpc::InsecureChannelCredentials(), grpc::ChannelArguments(), std::move(interceptor_creators));
+
+        AuthServiceClient client(channel);
+
+        std::string login_response = client.Login(email, password);
+        std::cout << "Successful Login response: " << login_response << std::endl;
+    }
 
     // std::string register_response = client.Register(email, username, password);
     // std::cout << "Register response: " << register_response << std::endl;

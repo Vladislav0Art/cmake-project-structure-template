@@ -14,6 +14,12 @@ namespace application::services
     const ::request_models::LoginRequest* request,
     ::response_models::LoginResponse* response
 ) {
+    std::cout << "AuthService::Login" << std::endl;
+
+    for (auto& [key, value] : context->client_metadata()) {
+        std::cout << key << " -> '" << value << "'" << std::endl;
+    }
+
     std::string email = request->email();
     std::string username = "User123";
     std::string password = request->password();
