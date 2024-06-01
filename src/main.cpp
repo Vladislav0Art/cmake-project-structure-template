@@ -1,5 +1,7 @@
 #include <iostream>
 #include <string>
+#include <fstream>
+
 
 // grpc
 #include "absl/flags/flag.h"
@@ -16,7 +18,6 @@
 // components
 #include "components/ServerInterceptor/server-interceptor.h"
 
-// libs
 
 
 
@@ -40,10 +41,8 @@ int main() {
 
     // set interceptor
     using namespace interceptors;
-
     std::vector<std::unique_ptr<ServerInterceptorFactoryInterface>> creators;
     creators.push_back(std::unique_ptr<ServerInterceptorFactoryInterface>(new LoggingInterceptorFactory()));
-
     builder.experimental().SetInterceptorCreators(std::move(creators));
 
     // running server

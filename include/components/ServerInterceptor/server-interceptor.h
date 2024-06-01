@@ -29,6 +29,10 @@ public:
     void Intercept(InterceptorBatchMethods* methods) override;
 
 private:
+    bool isTokenValid(std::string token) const;
+    std::string getUserIdFromToken(std::string token) const;
+
+private:
     bool invalidTokenReceived = false;
 };
 

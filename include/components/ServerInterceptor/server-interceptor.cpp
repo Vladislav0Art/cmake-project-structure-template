@@ -20,18 +20,22 @@ void LoggingInterceptor::Intercept(InterceptorBatchMethods* methods) {
         auto it = metadata->find("authorization");
 
         for (const auto& [key, value] : *metadata) {
-            std::cout << key << " -> " << value << std::endl;
+            std::cout << key << " -> '" << value << "'" << std::endl;
         }
 
-        // TODO: check token presence and validity
-        if (it != metadata->end() && !std::string(it->second.data()).empty()) {
-            std::cout << "[Interceptor " << this << "]: token='" << std::string(it->second.data()) << "'" << std::endl;
-            // methods->Proceed();
+        // validate auth token
+        // TODO: do not forget to split 'Bearer [TOKEN]'
+        if (it != metadata->end() && isTokenValid(it->second.data())) {
+            std::string token = it->second.data();
+            std::cout << "[Interceptor " << this << "]: token='" << token << "'" << std::endl;
+
+            // set user id as metadata from token
+            std::string userId = getUserIdFromToken(token);
+            metadata->insert({ "x-user-id", userId });
         }
         else {
-            std::cout << "[Interceptor " << this << "]: " << "Auth token not found" << std::endl;
+            std::cout << "[Interceptor " << this << "]: " << "token not found" << std::endl;
             invalidTokenReceived = true;
-            // methods->Proceed();
         }
     }
     else if (methods->QueryInterceptionHookPoint(grpc::experimental::InterceptionHookPoints::PRE_SEND_STATUS) && invalidTokenReceived) {
@@ -40,6 +44,17 @@ void LoggingInterceptor::Intercept(InterceptorBatchMethods* methods) {
     }
 
     methods->Proceed();
+}
+
+
+bool LoggingInterceptor::isTokenValid(std::string token) const {
+    // TODO: apply any nessesary validation of the token
+    return true;
+}
+
+std::string LoggingInterceptor::getUserIdFromToken(std::string token) const {
+    // TODO: parse JWT token and
+    return "1";
 }
 
 Interceptor* LoggingInterceptorFactory::CreateServerInterceptor(ServerRpcInfo* info) {

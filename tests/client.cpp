@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <fstream>
 
 #include <grpcpp/grpcpp.h>
 
@@ -77,9 +78,7 @@ private:
 };
 
 
-
 TEST_CASE("Connect to the gRPC server") {
-
     std::string email = "test@example.com";
     std::string username = "testuser";
     std::string password = "12345";
@@ -114,10 +113,6 @@ TEST_CASE("Connect to the gRPC server") {
     // std::cout << "Register response: " << register_response << std::endl;
 }
 
-
-TEST_CASE("Test interceptors") {
-
-}
 
 
 }
