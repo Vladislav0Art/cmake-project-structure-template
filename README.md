@@ -16,3 +16,8 @@ The project components:
 Read comments inside the source files to better understand the idea.
 
 **Warning:** the implementation is likely not the way you should implement the gRPC JWT Auth in C++. `AuthMetadataProcessor` is likely to be more suitable for this (See [this](https://stackoverflow.com/questions/41051041/intercept-grpc-c-calls-in-server-and-client)).
+
+
+### Order of events for the Client-Interceptors-Server comminucation:
+
+![Event order for Interceptors](./assets/interceptor-event-order.png)
