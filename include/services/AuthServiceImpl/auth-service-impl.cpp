@@ -15,7 +15,7 @@ namespace application::services
     ::response_models::LoginResponse* response
 ) {
     std::string email = request->email();
-    std::string username = "Username taken from the database";
+    std::string username = "User123";
     std::string password = request->password();
 
     std::cout << "email: '" << email << "'\n"

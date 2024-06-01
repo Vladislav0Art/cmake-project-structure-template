@@ -14,6 +14,7 @@
 #include "services/AuthServiceImpl/auth-service-impl.h"
 
 // components
+#include "components/ServerInterceptor/server-interceptor.h"
 
 // libs
 
@@ -36,6 +37,14 @@ int main() {
 
     // registering services
     builder.RegisterService(&service);
+
+    // set interceptor
+    using namespace interceptors;
+
+    std::vector<std::unique_ptr<ServerInterceptorFactoryInterface>> creators;
+    creators.push_back(std::unique_ptr<ServerInterceptorFactoryInterface>(new LoggingInterceptorFactory()));
+
+    builder.experimental().SetInterceptorCreators(std::move(creators));
 
     // running server
     std::unique_ptr<Server> server(builder.BuildAndStart());
