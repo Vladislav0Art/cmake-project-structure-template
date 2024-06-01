@@ -12,7 +12,7 @@
 #include "services/my-service.grpc.pb.h"
 #include "services/my-service.pb.h"
 
-#include "components/ClientInterceptor/client-interceptor.h"
+#include "components/ClientInterceptor/client-interceptor.hpp"
 
 
 

@@ -13,10 +13,10 @@
 #include <grpcpp/health_check_service_interface.h>
 
 // services
-#include "services/AuthServiceImpl/auth-service-impl.h"
+#include "services/MyServiceImpl/my-service-impl.hpp"
 
 // components
-#include "components/ServerInterceptor/server-interceptor.h"
+#include "components/ServerInterceptor/server-interceptor.hpp"
 
 
 
