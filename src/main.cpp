@@ -14,10 +14,8 @@
 #include "services/AuthServiceImpl/auth-service-impl.h"
 
 // components
-#include "components/HelloWorldComponent/hello-world-component.h"
 
 // libs
-#include "mylib/mylib.hpp"
 
 
 

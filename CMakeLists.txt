@@ -49,3 +49,29 @@ target_include_directories(main PUBLIC
     ./libs
     ${CMAKE_CURRENT_BINARY_DIR}
 )
+
+
+# create test executable
+add_executable(test
+    tests/client.cpp
+    tests/doctest_main.cpp
+
+    ${COMPONENTS_SRCS}
+    ${SERVICES_SRCS}
+
+    ${generated_proto_models_srcs}
+)
+
+add_dependencies(test generate_proto_models)
+
+target_link_libraries(test
+    absl::flags_parse
+    gRPC::grpc++
+    protobuf::libprotobuf
+)
+
+target_include_directories(test PUBLIC
+    ./include
+    ./libs
+    ${CMAKE_CURRENT_BINARY_DIR}
+)
