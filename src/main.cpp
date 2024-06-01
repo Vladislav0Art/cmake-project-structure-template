@@ -28,7 +28,7 @@ int main() {
     using grpc::ServerContext;
     using grpc::Status;
 
-    application::services::AuthServiceImpl service;
+    application::services::MyServiceImpl service;
 
     std::string server_address("0.0.0.0:50051");
     grpc::EnableDefaultHealthCheckService(true);

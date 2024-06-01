@@ -17,11 +17,14 @@ void LoggingInterceptor::Intercept(InterceptorBatchMethods* methods) {
         std::cout << "[Interceptor " << this << "]: POST_RECV_INITIAL_METADATA" << std::endl;
 
         const auto& metadata = methods->GetRecvInitialMetadata();
-        auto it = metadata->find("authorization");
 
+        // print all metadata supplied by the client
         for (const auto& [key, value] : *metadata) {
             std::cout << key << " -> '" << value << "'" << std::endl;
         }
+
+        // searching for auth token
+        auto it = metadata->find("authorization");
 
         // validate auth token
         // TODO: do not forget to split 'Bearer [TOKEN]'
@@ -35,11 +38,13 @@ void LoggingInterceptor::Intercept(InterceptorBatchMethods* methods) {
         }
         else {
             std::cout << "[Interceptor " << this << "]: " << "token not found" << std::endl;
+            // this variable indicates whether the received request contained invalid JWT token
             invalidTokenReceived = true;
         }
     }
     else if (methods->QueryInterceptionHookPoint(grpc::experimental::InterceptionHookPoints::PRE_SEND_STATUS) && invalidTokenReceived) {
         std::cout << "[Interceptor " << this << "]: " << "PRE_SEND_STATUS" << std::endl;
+        // once the endpoint returns, we substitute the returned status with UNAUTHENTICATED
         methods->ModifySendStatus(grpc::Status(grpc::StatusCode::UNAUTHENTICATED, "Invalid or missing token"));
     }
 

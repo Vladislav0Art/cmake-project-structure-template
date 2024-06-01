@@ -9,55 +9,34 @@
 namespace application::services
 {
 
-::grpc::Status AuthServiceImpl::Login(
+::grpc::Status MyServiceImpl::PrivateResource(
     ::grpc::ServerContext* context,
-    const ::request_models::LoginRequest* request,
-    ::response_models::LoginResponse* response
+    const ::request_models::Request* request,
+    ::response_models::Response* response
 ) {
-    std::cout << "AuthService::Login" << std::endl;
+    std::cout << "AuthService::PrivateResource" << std::endl;
 
-    // if interceptor sets the 'x-user-id' if the token is correct.
-    // here retrieve the id if it present, otherwise we return
+    // interceptor sets the 'x-user-id' field into metadata if the token is correct.
+    // here retrieve the id if it is present, otherwise we need to stop any further execution
+    // (the 'Unauthorized' will be returned by interceptor)
     auto itr = context->client_metadata().find("x-user-id");
 
+    // unauthorized
     if (itr == context->client_metadata().end()) {
         return grpc::Status::CANCELLED;
     }
 
     auto [_, userId] = *itr;
-
     std::cout << "[Service] user-id=" << userId << "\n";
 
-    // for (auto& [key, value] : context->client_metadata()) {
-    //     std::cout << key << " -> '" << value << "'" << std::endl;
-    // }
+    std::string query = request->query();
+    std::string userIdStr = std::string(userId.begin(), userId.end());
+    std::string username = "User-" + userIdStr;
 
-    std::string email = request->email();
-    std::string username = "User123";
-    std::string password = request->password();
-
-    // std::cout << "email: '" << email << "'\n"
-    //             << "username: '" << username << "'\n"
-    //             << "password: '" << password << "'\n";
-
-    if (password.size() < 4) {
-        // Return error status
-        return grpc::Status(grpc::StatusCode::INVALID_ARGUMENT, "Password must contain at least 4 symbols");
-    }
-
-    // If password is valid, set payload and return OK status
     response_models::Payload* payload = response->mutable_payload();
-    payload->set_email(email);
-    payload->set_username(username);
+    payload->set_user_id(userIdStr);
+    payload->set_data(username);
 
-    return grpc::Status::OK;
-}
-
-::grpc::Status AuthServiceImpl::Register(
-    ::grpc::ServerContext* context,
-    const ::request_models::RegistrationRequest* request,
-    ::response_models::RegistrationResponse* response
-) {
     return grpc::Status::OK;
 }
 

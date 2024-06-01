@@ -2,14 +2,15 @@
 #include <string>
 #include <vector>
 #include <fstream>
+#include <optional>
 
 #include <grpcpp/grpcpp.h>
 
 #include "doctest.h"
 
 // grpc
-#include "services/auth-service.grpc.pb.h"
-#include "services/auth-service.pb.h"
+#include "services/my-service.grpc.pb.h"
+#include "services/my-service.pb.h"
 
 #include "components/ClientInterceptor/client-interceptor.h"
 
@@ -21,98 +22,89 @@ using grpc::Channel;
 using grpc::ClientContext;
 using grpc::Status;
 
-using request_models::LoginRequest;
-using response_models::LoginResponse;
-using request_models::RegistrationRequest;
-using response_models::RegistrationResponse;
-using profile::AuthService;
+using request_models::Request;
+using response_models::Response;
+using request_models::Request;
+using response_models::Response;
+using profile::MyService;
 
 using namespace interceptors;
 
+template<typename Payload>
+using Result = std::pair<std::optional<Payload>, Status>;
 
 
-class AuthServiceClient {
+class SampleClient {
 public:
-    AuthServiceClient(std::shared_ptr<Channel> channel)
-        : m_stub(AuthService::NewStub(channel)) {}
+    SampleClient(std::shared_ptr<Channel> channel)
+        : m_stub(MyService::NewStub(channel)) {}
 
-    std::string Login(const std::string& email, const std::string& password) {
-        LoginRequest request;
-        request.set_email(email);
-        request.set_password(password);
+    Result<response_models::Payload> AccessPrivateResource(const std::string& query) {
+        Request request;
+        request.set_query(query);
 
-        LoginResponse reply;
+        Response reply;
         ClientContext context;
 
-        Status status = m_stub->Login(&context, request, &reply);
+        Status status = m_stub->PrivateResource(&context, request, &reply);
 
         if (status.ok()) {
-            return "Login successful: " + reply.payload().email() + ", " + reply.payload().username();
-        } else {
-            std::cout << status.error_code() << ": " << status.error_message() << std::endl;
-            return "Login failed";
+            return {reply.payload(), status};
         }
-    }
-
-    std::string Register(const std::string& email, const std::string& username, const std::string& password) {
-        RegistrationRequest request;
-        request.set_email(email);
-        request.set_username(username);
-        request.set_password(password);
-
-        RegistrationResponse reply;
-        ClientContext context;
-
-        Status status = m_stub->Register(&context, request, &reply);
-
-        if (status.ok()) {
-            return "Registration successful: " + reply.payload().email() + ", " + reply.payload().username();
-        } else {
+        if (status.error_code() == grpc::StatusCode::UNAVAILABLE) {
+            // TODO: client interceptor should have refreshed the JWT token via calling the refresh method of AuthService,
+            // now we try to request the service more time.
+            return AccessPrivateResource(query);
+        }
+        else {
+            // any other error including UNAUTHORIZED should result in a request failure
             std::cout << status.error_code() << ": " << status.error_message() << std::endl;
-            return "Registration failed";
+            return {std::nullopt, status};
         }
     }
 
 private:
-    std::unique_ptr<AuthService::Stub> m_stub;
+    std::unique_ptr<MyService::Stub> m_stub;
 };
 
 
-TEST_CASE("Connect to the gRPC server") {
-    std::string email = "test@example.com";
-    std::string username = "testuser";
-    std::string password = "12345";
+TEST_CASE("Failed authrization scenario") {
+    auto channel = grpc::CreateChannel("0.0.0.0:50051", grpc::InsecureChannelCredentials());
+    SampleClient client(channel);
 
-    // failed auth
-    {
-        auto channel = grpc::CreateChannel("0.0.0.0:50051", grpc::InsecureChannelCredentials());
-        AuthServiceClient client(channel);
+    std::string query = "some query to the private resource";
+    auto [payload, status] = client.AccessPrivateResource(query);
 
-        std::string login_response = client.Login(email, password);
-        std::cout << "Failed Login response: " << login_response << std::endl;
+    if (payload.has_value()) {
+        std::cout << "user_id=" << payload.value().user_id() << ", data=" << payload.value().data() << "\n";
     }
-
-
-    // successful auth
-    {
-        std::string token = "1234";
-
-        std::vector<std::unique_ptr<grpc::experimental::ClientInterceptorFactoryInterface>> interceptor_creators;
-        interceptor_creators.push_back(std::make_unique<ClientInterceptorFactory>(token));
-
-        auto channel = grpc::experimental::CreateCustomChannelWithInterceptors(
-            "0.0.0.0:50051", grpc::InsecureChannelCredentials(), grpc::ChannelArguments(), std::move(interceptor_creators));
-
-        AuthServiceClient client(channel);
-
-        std::string login_response = client.Login(email, password);
-        std::cout << "Successful Login response: " << login_response << std::endl;
+    else {
+        std::cout << "Request failed with status: '" << status.error_message() << "'\n";
     }
-
-    // std::string register_response = client.Register(email, username, password);
-    // std::cout << "Register response: " << register_response << std::endl;
 }
 
+
+TEST_CASE("Successful authrization scenario") {
+    std::string token = "1234";
+
+    std::vector<std::unique_ptr<grpc::experimental::ClientInterceptorFactoryInterface>> interceptor_creators;
+    interceptor_creators.push_back(std::make_unique<ClientInterceptorFactory>(token));
+
+    auto channel = grpc::experimental::CreateCustomChannelWithInterceptors(
+        "0.0.0.0:50051", grpc::InsecureChannelCredentials(), grpc::ChannelArguments(), std::move(interceptor_creators));
+
+    SampleClient client(channel);
+
+    std::string query = "some query to the private resource";
+    auto [payload, status] = client.AccessPrivateResource(query);
+
+    if (payload.has_value()) {
+        std::cout << "user_id=" << payload.value().user_id() << ", data=" << payload.value().data() << "\n";
+    }
+    else {
+        std::cout << "Request failed with status: '" << status.error_message() << "'\n";
+    }
+}
 
 
 }

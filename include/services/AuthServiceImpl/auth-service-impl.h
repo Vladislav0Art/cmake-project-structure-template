@@ -4,24 +4,18 @@
 #include <string>
 
 // grpc
-#include "services/auth-service.grpc.pb.h"
-#include "services/auth-service.pb.h"
+#include "services/my-service.grpc.pb.h"
+#include "services/my-service.pb.h"
 
 namespace application::services
 {
 
-class AuthServiceImpl final : public profile::AuthService::Service {
+class MyServiceImpl final : public profile::MyService::Service {
 public:
-    ::grpc::Status Login(
+    ::grpc::Status PrivateResource(
         ::grpc::ServerContext* context,
-        const ::request_models::LoginRequest* request,
-        ::response_models::LoginResponse* response
-    ) override;
-
-    ::grpc::Status Register(
-        ::grpc::ServerContext* context,
-        const ::request_models::RegistrationRequest* request,
-        ::response_models::RegistrationResponse* response
+        const ::request_models::Request* request,
+        ::response_models::Response* response
     ) override;
 };
 

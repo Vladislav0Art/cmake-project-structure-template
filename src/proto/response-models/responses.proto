@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package response_models;
+
+
+message Payload {
+    string data = 1;
+    string user_id = 2;
+}
+
+message Response {
+    Payload payload = 1;
+}

@@ -8,8 +8,8 @@
 #include <grpcpp/grpcpp.h>
 #include <grpcpp/support/server_interceptor.h>
 
-#include "request-models/auth-requests.grpc.pb.h"
-#include "request-models/auth-requests.pb.h"
+#include "request-models/requests.grpc.pb.h"
+#include "request-models/requests.pb.h"
 
 
 using grpc::Status;
@@ -19,7 +19,7 @@ using grpc::experimental::InterceptorBatchMethods;
 using grpc::experimental::ServerInterceptorFactoryInterface;
 using grpc::experimental::ServerRpcInfo;
 
-using request_models::LoginRequest;
+using request_models::Request;
 
 
 namespace interceptors {
